@@ -1,0 +1,41 @@
+import Link from "next/link";
+import { ArrowRight, Brain, CheckCircle2, Clock3, FileText, FolderKanban, Lightbulb, Plus, Sparkles } from "lucide-react";
+
+import { EmptyState } from "@/components/ui/empty-state";
+import { Button } from "@/components/ui/button";
+import { WorkspaceState } from "@/components/supabase/workspace-state";
+import { QuickCapture } from "@/features/dashboard/quick-capture";
+import { getDashboardSnapshot } from "@/server/dashboard/queries";
+
+const quietLinkClass = "inline-flex items-center gap-1.5 text-xs font-semibold text-primary transition-colors hover:text-primary/70";
+
+function SectionHeading({ title, description, href, label }: { title: string; description: string; href: string; label: string }) {
+  return <div className="mb-4 flex items-end justify-between gap-4"><div><h2 className="text-base font-semibold tracking-[-.025em]">{title}</h2><p className="mt-1 text-sm leading-6 text-muted-foreground">{description}</p></div><Link href={href} className={quietLinkClass}>{label}<ArrowRight className="size-3.5" /></Link></div>;
+}
+
+function dateLabel() {
+  return new Intl.DateTimeFormat("zh-CN", { weekday: "long", month: "long", day: "numeric", timeZone: "Asia/Shanghai" }).format(new Date());
+}
+
+export async function DashboardPage() {
+  const snapshot = await getDashboardSnapshot();
+  if (snapshot.status !== "ready") return <div className="space-y-7"><header className="border-b border-[var(--line-soft)] pb-7"><p className="eyebrow mb-3">Workspace</p><h1 className="text-3xl font-semibold tracking-[-.05em] sm:text-5xl">先连接你的学习空间</h1><p className="mt-4 max-w-xl text-sm leading-6 text-muted-foreground">数据只会写入当前用户所属的 Workspace，不使用演示数据。</p></header><WorkspaceState status={snapshot.status} /></div>;
+
+  return (
+    <div className="space-y-10">
+      <header className="animate-rise-in flex flex-col gap-5 border-b border-[var(--line-soft)] pb-8 sm:flex-row sm:items-end sm:justify-between"><div><p className="eyebrow mb-3">{dateLabel()} · {snapshot.workspaceName}</p><h1 className="max-w-2xl text-3xl font-semibold leading-tight tracking-[-.055em]">早上好，继续昨天的学习</h1><p className="mt-4 max-w-xl text-sm leading-6 text-muted-foreground">先看看还没结束的线索，再决定今天要把哪一个想法推进一步。</p></div><Button variant="outline" render={<Link href="/timeline" />}>回看时间线 <Clock3 className="size-4" /></Button></header>
+
+      <section className="grid gap-7 lg:grid-cols-[1.1fr_.9fr] lg:items-start"><div className="animate-rise-in animate-rise-in-delay-1"><SectionHeading title="Quick Capture" description="不需要先判断它是什么，先让它存在。" href="/inbox/new" label="打开 Inbox" /><QuickCapture /></div><div className="animate-rise-in animate-rise-in-delay-2 border-l-2 border-primary/20 pl-5 sm:pl-6"><p className="eyebrow">Continue learning</p><h2 className="mt-4 max-w-sm text-2xl font-semibold tracking-[-.045em]">从一个未完成的问题开始</h2><p className="mt-3 max-w-sm text-sm leading-6 text-muted-foreground">当你开始记录，系统会在这里提醒你最近留下的线索、未解决的问题和下一步行动。</p><Link href="/tasks" className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/70">查看开放任务 <ArrowRight className="size-4" /></Link></div></section>
+
+      <section className="grid border-y border-[var(--line-soft)] sm:grid-cols-4">{[{ label: "笔记", value: snapshot.counts.notes, icon: FileText }, { label: "可复用知识", value: snapshot.counts.knowledge, icon: Brain }, { label: "开放任务", value: snapshot.counts.tasks, icon: CheckCircle2 }, { label: "项目", value: snapshot.counts.projects, icon: FolderKanban }].map(({ label, value, icon: Icon }, index) => <div key={label} className={`flex items-center gap-3 py-5 sm:px-5 ${index > 0 ? "border-t border-[var(--line-soft)] sm:border-t-0 sm:border-l" : ""}`}><Icon className="size-4 text-primary" /><div><p className="text-xs text-muted-foreground">{label}</p><p className="mt-1 text-2xl font-semibold tracking-[-.05em]">{value}</p></div></div>)}</section>
+
+      <section className="grid gap-9 xl:grid-cols-[1.1fr_.9fr]"><div><SectionHeading title="Today Tasks" description="把理解变成下一步行动。" href="/tasks" label="查看全部" /><div className="surface-panel p-3">{snapshot.tasks.length === 0 ? <EmptyState icon={CheckCircle2} title="今天还没有任务" description="先记录一个你想推进的具体动作。" action={<Button variant="outline" size="sm" render={<Link href="/tasks" />}>新建任务 <Plus className="size-3.5" /></Button>} /> : <div className="divide-y">{snapshot.tasks.map((task) => <Link key={task.id} href="/tasks" className="flex items-center justify-between gap-4 px-3 py-3 text-sm hover:bg-muted/50"><span className="truncate">{task.title}</span><span className="shrink-0 text-xs text-muted-foreground">优先级 {task.priority}</span></Link>)}</div>}</div></div><div><SectionHeading title="Recent Notes" description="最近留下的原始素材。" href="/notes" label="浏览 Notes" /><div className="surface-panel p-3">{snapshot.notes.length === 0 ? <EmptyState icon={FileText} title="笔记列表是空的" description="快速记录会写入当前 Workspace。" action={<Button size="sm" render={<Link href="/inbox/new" />}>写第一条笔记 <ArrowRight className="size-3.5" /></Button>} /> : <div className="divide-y">{snapshot.notes.map((note) => <Link key={note.id} href="/notes" className="block px-3 py-3 hover:bg-muted/50"><p className="truncate text-sm font-medium">{note.title || "未命名记录"}</p><p className="mt-1 truncate text-xs text-muted-foreground">{note.excerpt || note.content_markdown}</p></Link>)}</div>}</div></div></section>
+
+      <section className="grid gap-9 xl:grid-cols-2"><div><SectionHeading title="Recent Knowledge" description="可复用的理解会出现在这里。" href="/knowledge" label="浏览 Knowledge" /><div className="surface-panel p-3">{snapshot.knowledge.length === 0 ? <EmptyState icon={Brain} title="还没有知识卡片" description="不要急着整理，先把真实思考留下来。" /> : <div className="divide-y">{snapshot.knowledge.map((item) => <Link key={item.id} href="/knowledge" className="block px-3 py-3 hover:bg-muted/50"><p className="text-sm font-medium">{item.title}</p><p className="mt-1 truncate text-xs text-muted-foreground">{item.summary || item.body_markdown || "还没有摘要"}</p></Link>)}</div>}</div></div><div><SectionHeading title="Current Projects" description="项目为知识提供实践上下文。" href="/projects" label="浏览 Projects" /><div className="surface-panel p-3"><EmptyState icon={FolderKanban} title={snapshot.counts.projects ? `${snapshot.counts.projects} 个项目已建立` : "还没有项目"} description="项目模块仍保留原有入口，Phase A 先保证基础学习数据持久化。" action={<Button variant="outline" size="sm" render={<Link href="/projects" />}>打开 Projects</Button>} /></div></div></section>
+
+      <section className="grid gap-9 border-t border-[var(--line-soft)] pt-9 xl:grid-cols-[1.05fr_.95fr]"><div><div className="mb-4"><p className="eyebrow">Learning overview</p><h2 className="mt-3 text-xl font-semibold tracking-[-.04em]">把节奏留给真实进展</h2><p className="mt-2 max-w-lg text-sm leading-6 text-muted-foreground">完成任务、整理知识和写下 Reflection 后，这里会逐渐形成你的学习轨迹。</p></div><div className="rounded-lg border bg-[#f1ede5] p-5"><div className="flex items-center justify-between text-sm"><span className="font-semibold">当前学习轨迹</span><span className="text-xs text-muted-foreground">Phase A</span></div><div className="mt-4 h-1.5 overflow-hidden rounded-full bg-background"><div className="h-full bg-primary" style={{ width: `${Math.min(100, snapshot.counts.notes + snapshot.counts.knowledge + snapshot.counts.tasks > 0 ? 12 : 0)}%` }} /></div><p className="mt-4 text-xs leading-5 text-muted-foreground">当前展示真实记录数量；认知时间线将在后续 Phase 接入。</p></div></div><div><div className="mb-4"><p className="eyebrow">Recent reflection</p><h2 className="mt-3 text-xl font-semibold tracking-[-.04em]">让认知变化留下来</h2><p className="mt-2 text-sm leading-6 text-muted-foreground">Reflection 会记录你如何改变理解，而不是覆盖过去。</p></div><div className="surface-panel p-3"><EmptyState icon={Lightbulb} title="还没有认知版本" description="Reflection 和 Cognitive Layer 不在本阶段实现。" /></div></div></section>
+
+      <div className="flex items-start gap-3 border-t border-[var(--line-soft)] pt-5 text-xs leading-5 text-muted-foreground"><Sparkles className="mt-0.5 size-3.5 shrink-0 text-primary" />Dashboard 只读取当前 Workspace 的真实数据。</div>
+    </div>
+  );
+}
