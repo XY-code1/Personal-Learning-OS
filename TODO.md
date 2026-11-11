@@ -1,20 +1,40 @@
-# Phase 1 TODO
+# Personal Learning OS TODO
 
-- [x] Initialize Next.js App Router, TypeScript, Tailwind CSS, and shadcn/ui foundations.
-- [x] Create project conventions and product architecture docs.
-- [x] Add Supabase environment template and database migration for workspace-scoped data.
-- [x] Build the workspace shell, Sidebar, Dashboard, and independent placeholder routes.
-- [x] Run lint, typecheck, build, and tests; fix all ordinary issues.
-- [ ] Complete manual Phase 1 acceptance checklist and stop before Phase 2 (waiting for user acceptance).
+更新时间：2026-11-11
 
+当前阶段：**V1 收口（P0：修复 Broken / Placeholder 核心模块）**。Phase A、Phase 1、Phase 2、P1.5、P2.1、Import / Export MVP、只读 AI Assistant MVP 已完成代码实现；V1 剩余工作见 [docs/ROADMAP.md](docs/ROADMAP.md) 的 P0–P10。
 
-# Landing UI Refinement TODO
+## 近期已完成
 
-- [x] Copy audit: remove punctuation from hero and section display headings.
-- [x] Refactor section rhythm so each section has a distinct information task.
-- [x] Increase the visual scale and product fidelity of the hero Workspace Preview.
-- [x] Add Note, Reflection, Project, Timeline, and AI product previews with real information architecture.
-- [x] Strengthen Reflection as the narrative centerpiece.
-- [x] Update GSAP/ScrollTrigger sequencing, timeline drawing, and mobile motion reduction.
-- [x] Run responsive/accessibility consistency audit.
-- [x] Run lint, typecheck, build, and existing tests.
+- [x] 数据完整性：版本 / 时间线 / 审计表 append-only 收敛（PR #1）。
+- [x] Timeline 真实读取页、Global Search 禁用、Dashboard / AI 占位链接收敛（PR #2）。
+- [x] README 重写、LICENSE、文档状态统一（本 PR）。
+
+## V1 收口待办
+
+- [ ] Projects / Experiments / Topics / Reflections / Settings 从占位页升级为最小真实 CRUD。
+- [ ] Global Search 实现跨模块关键词搜索。
+- [ ] JSON 导入冲突预览与跨表原子导入。
+- [ ] AI Assistant 流式对话、精确 Citation、Tool Calling。
+- [ ] 多成员 Workspace 运行时支持。
+- [ ] 密码找回 / 注册确认回调路由。
+- [ ] 真实登录态人工验收（RLS 隔离、非空 Explore、AI Review）。
+
+## 历史完成项
+
+### Phase 1 基础
+
+- [x] Next.js App Router、TypeScript、Tailwind、shadcn/ui 初始化。
+- [x] 项目规范与产品架构文档。
+- [x] Supabase 环境模板与 workspace-scoped migration。
+- [x] 工作区外壳、Sidebar、Dashboard 与独立路由。
+- [x] lint / typecheck / build / test 修复。
+
+### Landing UI
+
+- [x] Hero 与区块标题文案审计。
+- [x] 区块节奏重构，每个区块有独立的信息任务。
+- [x] Hero Workspace Preview 视觉升级。
+- [x] Note / Reflection / Project / Timeline / AI 产品预览。
+- [x] GSAP / ScrollTrigger 动效与 reduced-motion 处理。
+- [x] 响应式与可访问性一致性检查。
