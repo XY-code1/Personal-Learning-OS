@@ -154,7 +154,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
             <Link href="/search" className="hidden h-9 items-center gap-2 rounded-md border bg-card px-3 text-xs text-muted-foreground transition-colors hover:border-primary/35 hover:text-foreground md:flex" aria-label="打开全局搜索">
-              <Search className="size-3.5" aria-hidden="true" /><span>搜索知识、笔记或项目</span><kbd className="ml-2 rounded-sm bg-muted px-1.5 py-0.5 font-mono text-[10px]">⌘ K</kbd>
+              <Search className="size-3.5" aria-hidden="true" /><span>搜索知识、笔记或项目</span>
             </Link>
             <span className="hidden border-l border-[var(--line-soft)] pl-3 text-[0.68rem] font-medium text-muted-foreground sm:inline">Phase 1 Preview</span>
             <div className="flex size-9 items-center justify-center rounded-full border bg-card text-xs font-semibold text-primary" aria-label="当前用户">L</div>
