@@ -20,7 +20,6 @@ function parseDueAt(formData: FormData) {
 
 function refreshTasks() {
   revalidatePath("/dashboard");
-  revalidatePath("/workspace/dashboard");
   revalidatePath("/tasks");
 }
 

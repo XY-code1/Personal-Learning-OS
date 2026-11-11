@@ -74,9 +74,9 @@ AI_API_KEY=
    - **Site URL**：填 `http://localhost:3000`（生产部署时再加正式域名）。
    - **Redirect URLs**：加上：
      - `http://localhost:3000/auth/callback`
-     - `http://localhost:3000/workspace/dashboard`
+     - `http://localhost:3000/dashboard`
      - `http://localhost:3000/login`
-   - 项目目前的 OTP 注册回调是 `window.location.origin + "/workspace/dashboard"`，所以登录流程会自动跳到本地的工作台。
+   - 项目目前的 OTP 注册回调是 `window.location.origin + "/dashboard"`，所以登录流程会自动跳到本地的工作台。
 
 ## 5. 把邮件模板改成显示 6 位数字验证码
 

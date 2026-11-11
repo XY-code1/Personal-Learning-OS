@@ -11,7 +11,6 @@ const noteTypes = ["quick", "journal", "markdown", "outline"] as const;
 
 function refreshNotes() {
   revalidatePath("/dashboard");
-  revalidatePath("/workspace/dashboard");
   revalidatePath("/inbox");
   revalidatePath("/notes");
 }
