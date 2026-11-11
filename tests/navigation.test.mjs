@@ -152,3 +152,15 @@ test("AI Assistant is read-only and returns source-backed answers", () => {
   assert.match(workspace, /Sources/);
   assert.doesNotMatch(service + workspace, /supabase\.from\(["'](?:notes|knowledge|projects|reflections|timeline_events)["']\)\.update|\.delete\(/);
 });
+
+test("append-only history and audit actor integrity are enforced", () => {
+  const migration = readFileSync(new URL("supabase/migrations/20261111000000_enforce_append_only_history.sql", root), "utf8");
+  for (const table of ["note_versions", "knowledge_versions", "reflection_versions", "timeline_events", "audit_logs"]) {
+    assert.match(migration, new RegExp(`drop policy if exists ${table}_workspace_update`), `missing update policy drop: ${table}`);
+    assert.match(migration, new RegExp(`drop policy if exists ${table}_workspace_delete`), `missing delete policy drop: ${table}`);
+  }
+  assert.match(migration, /create policy audit_logs_workspace_insert/);
+  assert.match(migration, /actor_type <> 'user' or actor_id = auth\.uid\(\)/);
+  assert.match(migration, /create policy reflection_versions_workspace_insert/);
+  assert.match(migration, /created_by = auth\.uid\(\)/);
+});
