@@ -12,7 +12,7 @@ export default function SearchPage() {
       <Card>
         <CardHeader><CardTitle>搜索你的学习空间</CardTitle></CardHeader>
         <CardContent>
-          <div className="relative"><SearchIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" /><Input placeholder="输入关键词……" aria-label="全局搜索关键词" className="pl-9" /></div>
+          <div className="relative"><SearchIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" /><Input placeholder="搜索功能即将开放" aria-label="全局搜索关键词（即将开放）" className="pl-9" disabled /></div>
           <div className="mt-6"><EmptyState icon={SearchIcon} title="搜索索引尚未启用" description="Phase 1 先建立界面入口；复杂全文搜索和向量检索会在后续阶段加入。" /></div>
         </CardContent>
       </Card>

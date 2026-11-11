@@ -16,12 +16,12 @@ const capabilities = [
   { icon: Lightbulb, title: "观察认知变化", text: "回答会保留来源，方便回到原始记录继续判断。" },
 ];
 
-function sourceHref(source: AssistantSource) {
+function sourceHref(source: AssistantSource): string | null {
   if (source.type === "knowledge") return "/knowledge/" + source.id;
   if (source.type === "timeline") return "/timeline";
-  if (source.type === "project") return "/projects";
-  if (source.type === "reflection") return "/reflections";
-  return "/notes";
+  if (source.type === "note") return "/notes";
+  // project / reflection 还没有可跳转的列表页，先不作为链接。
+  return null;
 }
 
 function sourceLabel(type: AssistantSource["type"]) {
@@ -90,7 +90,12 @@ export function AssistantWorkspace() {
             </div>
           </form>
           {message ? <div className="mt-5"><EmptyState icon={Sparkles} title={message} description={message === "AI Provider 尚未配置" ? "请在服务端配置 AI_API_KEY 或 AI_PROVIDER_KEY，以及 AI_MODEL_KEY。配置后重新提问。" : "可以调整问题关键词，或先在 Notes、Knowledge 中记录更多上下文。"} className="min-h-40 rounded-lg" /></div> : null}
-          {answer ? <section className="mt-6 grid gap-5 border-t pt-6" aria-live="polite"><div><div className="mb-3 flex items-center gap-2 text-xs font-semibold text-primary"><Sparkles className="size-3.5" />AI 回答</div><p className="whitespace-pre-wrap text-sm leading-7">{answer.answer}</p></div><div><div className="mb-3 flex items-center gap-2 text-xs font-semibold text-muted-foreground"><FileSearch className="size-3.5" />Sources · {answer.sources.length}</div>{answer.sources.length === 0 ? <p className="text-xs text-muted-foreground">模型没有返回可验证来源，请重新提问。</p> : <div className="grid gap-2 sm:grid-cols-2">{answer.sources.map((source) => <Link key={source.id} href={sourceHref(source)} className="group rounded-lg border bg-muted/25 p-3 transition-colors hover:border-primary/30 hover:bg-accent/40"><div className="flex items-start justify-between gap-3"><div><p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-primary">{sourceLabel(source.type)}</p><p className="mt-1 text-sm font-semibold">{source.title}</p></div><ArrowRight className="mt-0.5 size-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5" /></div>{source.excerpt ? <p className="mt-2 line-clamp-3 text-xs leading-5 text-muted-foreground">{source.excerpt}</p> : null}</Link>)}</div>}</div></section> : null}
+          {answer ? <section className="mt-6 grid gap-5 border-t pt-6" aria-live="polite"><div><div className="mb-3 flex items-center gap-2 text-xs font-semibold text-primary"><Sparkles className="size-3.5" />AI 回答</div><p className="whitespace-pre-wrap text-sm leading-7">{answer.answer}</p></div><div><div className="mb-3 flex items-center gap-2 text-xs font-semibold text-muted-foreground"><FileSearch className="size-3.5" />Sources · {answer.sources.length}</div>{answer.sources.length === 0 ? <p className="text-xs text-muted-foreground">模型没有返回可验证来源，请重新提问。</p> : <div className="grid gap-2 sm:grid-cols-2">{answer.sources.map((source) => {
+  const href = sourceHref(source);
+  const cardClass = "group rounded-lg border bg-muted/25 p-3 transition-colors hover:border-primary/30 hover:bg-accent/40";
+  const cardContent = <><div className="flex items-start justify-between gap-3"><div><p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-primary">{sourceLabel(source.type)}</p><p className="mt-1 text-sm font-semibold">{source.title}</p></div>{href ? <ArrowRight className="mt-0.5 size-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5" /> : null}</div>{source.excerpt ? <p className="mt-2 line-clamp-3 text-xs leading-5 text-muted-foreground">{source.excerpt}</p> : null}</>;
+  return href ? <Link key={source.id} href={href} className={cardClass}>{cardContent}</Link> : <div key={source.id} className={cardClass}>{cardContent}</div>;
+})}</div>}</div></section> : null}
         </CardContent>
       </Card>
 
