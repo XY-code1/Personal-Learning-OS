@@ -1,8 +1,22 @@
 # Personal Learning OS 进度记录
 
-更新时间：2026-09-16
+更新时间：2026-11-11
 
-## 当前阶段
+## 当前状态（2026-11-11）
+
+V1 收口阶段。Phase A / 1 / 2、P1.5、P2.1、Import/Export MVP、只读 AI Assistant MVP 代码实现完成。近期完成：
+
+- PR #1：数据完整性——版本 / 时间线 / 审计表 append-only 收敛，补 audit_logs actor 校验（https://github.com/XY-code1/Personal-Learning-OS/pull/1）。
+- PR #2：Timeline 真实读取页、Global Search 禁用、Dashboard / AI 占位链接收敛（https://github.com/XY-code1/Personal-Learning-OS/pull/2）。
+- 本 PR：README 重写、LICENSE、文档状态统一。
+
+自动化验证：npm run lint / typecheck / test / build 全部通过（PR #1 / #2 合并后测试 15/15）。
+
+剩余 V1 工作见 docs/ROADMAP.md 的 P0–P10；最优先仍是 Projects / Experiments / Topics / Reflections / Settings 占位模块升级、Global Search 实现、JSON 导入冲突预览和多成员 Workspace。
+
+## 历史阶段记录（2026-09-16）
+
+### 当时状态
 
 V1 功能范围已冻结，当前在不破坏既有模块的前提下增量实现 Import / Export 与只读 AI Assistant MVP。P1.5 / P2.1.1 AI Understanding Review 已完成代码实现与本地验证；真实模型人工验收仍依赖服务端 AI 配置。
 
