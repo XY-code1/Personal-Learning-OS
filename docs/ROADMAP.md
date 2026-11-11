@@ -1,12 +1,14 @@
 # Personal Learning OS 开发路线
 
-## Phase 0：基础工程
+> 当前阶段：V1 收口（P0：修复 Broken / Placeholder 核心模块）。Phase A / Phase 1 / Phase 2 / P1.5 / P2.1 已完成；Import / Export 与只读 AI Assistant MVP 已实现。剩余工作见下方 P0–P10。
+
+## Phase 0：基础工程（已完成）
 
 - Next.js、TypeScript、Tailwind、shadcn/ui
 - 环境变量、代码规范、Git、CI
 - Supabase 配置和 migration 体系
 
-## Phase A：基础数据层 + Auth（当前阶段）
+## Phase A：基础数据层 + Auth（已完成）
 
 - Supabase Email password Auth
 - Supabase Email OTP：6 位验证码、倒计时、重新发送和验证
@@ -18,7 +20,7 @@
 
 验收：注册/验证码/登录/退出/重新登录可用；创建的数据刷新后仍存在；RLS 隔离不同用户；Note、Knowledge、Task CRUD 可用；lint/typecheck/build/test 通过。
 
-## Phase 1：Cognitive Layer MVP（当前执行）
+## Phase 1：Cognitive Layer MVP（已完成）
 
 - Knowledge Detail：Current Understanding、Understanding History、Evidence、Reflections、Knowledge Gaps、Next Actions、Timeline
 - 手动创建 Learning Evidence、Reflection v1、Knowledge Gap，并关联现有 Task
@@ -27,7 +29,7 @@
 
 验收：用户可以从 Knowledge Detail 创建 Reflection、Evidence、Knowledge Gap，关联已有 Task，并看到对应的版本与 Timeline 事件。
 
-## Phase 2：Cognitive Evolution（当前执行）
+## Phase 2：Cognitive Evolution（已完成）
 
 - Knowledge Detail 展示 Understanding V1、V2、V3 等真实版本历史
 - Knowledge Version 精确关联来源 Evidence、Reflection、Project 和 Experiment
@@ -37,7 +39,7 @@
 
 验收：编辑 Knowledge 后可看到新版本；不同版本可比较；来源和变化原因可追溯；既有数据无需迁移回填。
 
-## P1.5 / P2.1.1：AI Understanding Review
+## P1.5 / P2.1.1：AI Understanding Review（已完成）
 
 - 在 Knowledge Detail 选择已有 Understanding Version，主动请求只读 AI Review。
 - Review 输出 verdict、confidence、correct_points、issues、missing_points 和 suggested_revision。

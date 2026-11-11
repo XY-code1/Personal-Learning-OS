@@ -6,13 +6,17 @@
 
 ## 当前 Phase A 配置状态（以本节为准）
 
-此前记录的云端配置是历史操作记录，不代表当前工作区已经可用。当前 `.env.local` 文件存在，但 `NEXT_PUBLIC_SUPABASE_URL` 和 `NEXT_PUBLIC_SUPABASE_ANON_KEY` 仍为空；请按下面步骤填写并重启开发服务器。
+此前记录的云端配置是历史操作记录，不代表当前工作区已经可用。请在项目根目录创建 `.env.local` 并填写 `NEXT_PUBLIC_SUPABASE_URL` 与 `NEXT_PUBLIC_SUPABASE_ANON_KEY`，然后重启开发服务器；是否已填写以你本地环境为准。
 
-Phase A 需要按顺序执行全部 migration：
+需要按顺序执行 `supabase/migrations/` 下的全部 migration（共 7 条）：
 
 1. `supabase/migrations/20260830000000_phase1_initial_schema.sql`
 2. `supabase/migrations/20260831000000_phase_a_integrity.sql`
 3. `supabase/migrations/20260831010000_phase_a_write_transactions.sql`
+4. `supabase/migrations/20260901000000_cognitive_layer_mvp.sql`
+5. `supabase/migrations/20260901010000_phase2_cognitive_evolution.sql`
+6. `supabase/migrations/20260901020000_ai_understanding_review.sql`
+7. `supabase/migrations/20261111000000_enforce_append_only_history.sql`
 
 Email provider、6 位 OTP 模板和 Redirect URL 仍需在 Dashboard 手动配置。免费项目默认邮件服务通常不能通过 API 修改模板，必须将 Magic Link / Confirm signup 模板改为显示 `{{ .Token }}`，具体步骤见第 5 节。
 ## 1. 在 Supabase 创建免费项目
@@ -88,14 +92,14 @@ AI_API_KEY=
 
 ## 6. 在 Supabase 里执行数据库 migration
 
-项目里的三条 `supabase/migrations/` 文件按时间顺序准备好 Phase A 的表、索引、触发器、事务函数和 RLS。请全部执行，不要只执行初始 migration。
+项目里的 `supabase/migrations/` 文件（共 7 条）按时间顺序定义表、索引、触发器、事务函数和 RLS。请全部执行，不要只执行初始 migration。
 
 执行方式二选一：
 
 ### 方式 A：用 Supabase SQL Editor（最简单）
 
 1. Supabase Dashboard → **SQL Editor → New query**。
-2. 按顺序把 `supabase/migrations/` 下这三条文件的完整内容粘贴并执行：`20260830000000_phase1_initial_schema.sql`、`20260831000000_phase_a_integrity.sql`、`20260831010000_phase_a_write_transactions.sql`。
+2. 按顺序把 `supabase/migrations/` 下全部 7 条文件的完整内容粘贴并执行（从 `20260830000000_phase1_initial_schema.sql` 到 `20261111000000_enforce_append_only_history.sql`）。
 3. 点 Run。
 4. 切到 **Table Editor**，确认看到 `profiles`、`workspaces`、`workspace_members`、`notes`、`knowledge`、`reflections` 等表。
 
