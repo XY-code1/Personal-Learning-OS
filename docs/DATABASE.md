@@ -110,3 +110,15 @@ Phase A 复用已有 `notes`、`note_versions`、`knowledge`、`knowledge_versio
 - `supabase/migrations/20260831010000_phase_a_write_transactions.sql`：提供 `create_note_with_version`、`update_note_with_version`、`create_knowledge_with_version`、`update_knowledge_with_version` RPC，将主体、append-only 版本和 Timeline event 放在同一数据库事务中。
 
 执行顺序必须是初始 migration、integrity migration、transaction migration。Workspace ID 由当前会话服务端查询得到，客户端表单不接受任意 Workspace 归属。
+
+## Append-only history enforcement
+
+`note_versions`、`knowledge_versions`、`reflection_versions`、`timeline_events` 和 `audit_logs` 是追加式记录：应用用户只能 INSERT / SELECT，不能 UPDATE / DELETE。
+
+migration `supabase/migrations/20261111000000_enforce_append_only_history.sql` 做了以下收敛：
+
+- 移除以上五张表的 workspace update / delete 策略，历史版本、时间线和审计记录无法再被应用层改写或删除。
+- `audit_logs` 的 insert 策略要求 `actor_type <> 'user'` 或 `actor_id = auth.uid()`，防止用户审计记录被伪造。
+- `reflection_versions` 的 insert 策略同时要求 `created_by = auth.uid()`，与 `note_versions`、`knowledge_versions` 保持一致。
+
+数据库级联删除（例如删除 Workspace 时）不受影响；应用层没有删除历史版本、时间线或审计记录的入口。
