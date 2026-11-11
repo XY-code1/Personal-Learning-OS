@@ -75,7 +75,7 @@ function NavigationLink({ item, active, onNavigate }: { item: NavigationItem; ac
   );
 }
 
-function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate: () => void }) {
+function SidebarContent({ pathname, onNavigate, workspaceName }: { pathname: string; onNavigate: () => void; workspaceName: string }) {
   return (
     <>
       <div className="flex items-center gap-3 px-2">
@@ -92,7 +92,7 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
       <div className="mt-8 flex items-center justify-between border-y border-[var(--line-soft)] px-2 py-3">
         <div className="min-w-0">
           <p className="text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">Workspace</p>
-          <p className="mt-1 truncate text-sm font-medium">My Learning Space</p>
+          <p className="mt-1 truncate text-sm font-medium">{workspaceName}</p>
         </div>
         <ChevronDown className="size-3.5 text-muted-foreground" aria-hidden="true" />
       </div>
@@ -109,7 +109,7 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
   );
 }
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({ children, workspaceName = "My Learning Space", userName = "Learner" }: { children: React.ReactNode; workspaceName?: string; userName?: string }) {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -132,15 +132,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {mobileOpen ? <button type="button" className="fixed inset-0 z-30 bg-foreground/20 lg:hidden" aria-label="关闭导航" onClick={closeMobileNav} /> : null}
       <aside className={cn("fixed inset-y-0 left-0 z-40 flex w-[18rem] -translate-x-full flex-col border-r border-[var(--sidebar-border)] bg-[var(--sidebar)] px-5 py-6 transition-transform duration-200 lg:translate-x-0", mobileOpen && "translate-x-0")}>
         <div className="mb-5 flex justify-end lg:hidden"><button type="button" className="flex size-9 items-center justify-center rounded-md text-muted-foreground hover:bg-background" aria-label="关闭导航" onClick={closeMobileNav}><X className="size-4" /></button></div>
-        <SidebarContent pathname={pathname} onNavigate={closeMobileNav} />
+        <SidebarContent pathname={pathname} onNavigate={closeMobileNav} workspaceName={workspaceName} />
         <div className="mt-auto border-t border-[var(--line-soft)] pt-4">
           <Link href="/settings" onClick={closeMobileNav} className="flex items-center gap-3 rounded-md px-2 py-2.5 text-sm text-muted-foreground hover:bg-background/75 hover:text-foreground">
             <Settings2 className="size-4" aria-hidden="true" />
             <span>设置与偏好</span>
           </Link>
           <div className="mt-3 flex items-center gap-3 rounded-md bg-background/55 p-2.5">
-            <div className="flex size-8 items-center justify-center rounded-full bg-accent text-xs font-semibold text-primary">L</div>
-            <div className="min-w-0 flex-1"><p className="truncate text-xs font-semibold">Learner</p><p className="truncate text-[0.68rem] text-muted-foreground">个人空间</p></div>
+            <div className="flex size-8 items-center justify-center rounded-full bg-accent text-xs font-semibold text-primary">{userName.slice(0, 1).toUpperCase()}</div>
+            <div className="min-w-0 flex-1"><p className="truncate text-xs font-semibold">{userName}</p><p className="truncate text-[0.68rem] text-muted-foreground">个人空间</p></div>
             <button type="button" className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-background hover:text-foreground" aria-label="退出登录" onClick={signOut}><LogOut className="size-3.5" /></button>
           </div>
         </div>
@@ -156,8 +156,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Link href="/search" className="hidden h-9 items-center gap-2 rounded-md border bg-card px-3 text-xs text-muted-foreground transition-colors hover:border-primary/35 hover:text-foreground md:flex" aria-label="打开全局搜索">
               <Search className="size-3.5" aria-hidden="true" /><span>搜索知识、笔记或项目</span>
             </Link>
-            <span className="hidden border-l border-[var(--line-soft)] pl-3 text-[0.68rem] font-medium text-muted-foreground sm:inline">Phase 1 Preview</span>
-            <div className="flex size-9 items-center justify-center rounded-full border bg-card text-xs font-semibold text-primary" aria-label="当前用户">L</div>
+            <div className="flex size-9 items-center justify-center rounded-full border bg-card text-xs font-semibold text-primary" aria-label="当前用户">{userName.slice(0, 1).toUpperCase()}</div>
           </div>
         </header>
         <main className="mx-auto w-full max-w-[1320px] px-4 py-7 sm:px-8 sm:py-9 lg:px-10 lg:py-11">{children}</main>

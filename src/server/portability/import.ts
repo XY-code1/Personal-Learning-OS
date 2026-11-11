@@ -123,7 +123,7 @@ function prepareRows(table: PortableTable, rows: Array<Record<string, unknown>>,
 }
 
 function refreshImportedData() {
-  for (const path of ["/dashboard", "/workspace/dashboard", "/inbox", "/notes", "/knowledge", "/explore", "/projects", "/tasks", "/experiments", "/reflections", "/timeline"]) {
+  for (const path of ["/dashboard", "/inbox", "/notes", "/knowledge", "/explore", "/projects", "/tasks", "/experiments", "/reflections", "/timeline"]) {
     revalidatePath(path);
   }
 }

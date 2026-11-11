@@ -18,7 +18,6 @@ function refreshKnowledgeDetail(knowledgeId: string) {
   revalidatePath(`/knowledge/${knowledgeId}`);
   revalidatePath("/knowledge");
   revalidatePath("/dashboard");
-  revalidatePath("/workspace/dashboard");
   revalidatePath("/timeline");
 }
 

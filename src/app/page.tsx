@@ -9,7 +9,7 @@ export default async function Home() {
     try {
       const supabase = await createSupabaseServerClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) startHref = "/workspace/dashboard";
+      if (user) startHref = "/dashboard";
     } catch {
       // Keep the public landing page available when Supabase is not reachable.
     }

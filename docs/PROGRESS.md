@@ -110,7 +110,7 @@ V1 功能范围已冻结，当前在不破坏既有模块的前提下增量实�
 
 ### 重复或边界重叠
 
-- /dashboard 与 /workspace/dashboard 都指向同一个 Dashboard 实现，是兼容入口别名，不应再复制第二套 Dashboard 业务逻辑。
+- `/workspace/dashboard` 现在重定向到 `/dashboard`，不再保留重复的 Dashboard 路由。
 - Dashboard Quick Capture 与 Inbox New 复用 QuickCapture 和 Note 写入动作，这是合理复用，不是重复领域模型。
 - Knowledge Detail 与 Constellation Inspector 展示部分相同认知字段；它们应继续作为 Detail 与只读投影复用同一查询/类型，不应新增 Understanding 或 Cognitive Timeline 主表。
 - /ai 静态 Assistant 入口与 Knowledge Detail 的 AI Understanding Review 目前存在产品入口错位；后续应让 Assistant 明确承载问答，Review 保留在 Knowledge Detail。

@@ -15,11 +15,13 @@ test("every primary navigation item has a route", () => {
 });
 
 test("public and auth entry points exist", () => {
-  for (const route of ["src/app/page.tsx", "src/app/login/page.tsx", "src/app/register/page.tsx", "src/app/forgot-password/page.tsx", "src/app/workspace/dashboard/page.tsx"]) {
+  for (const route of ["src/app/page.tsx", "src/app/login/page.tsx", "src/app/register/page.tsx", "src/app/forgot-password/page.tsx"]) {
     assert.ok(existsSync(new URL(route, root)), `entry point missing: ${route}`);
   }
   assert.match(readFileSync(new URL("src/app/page.tsx", root), "utf8"), /LandingPage/);
-  assert.match(readFileSync(new URL("src/proxy.ts", root), "utf8"), /workspace\/dashboard/);
+  const nextConfig = readFileSync(new URL("next.config.ts", root), "utf8");
+  assert.match(nextConfig, /source: "\/workspace\/dashboard"/);
+  assert.match(nextConfig, /destination: "\/dashboard"/);
 });
 
 test("the workspace migration includes the core isolation tables", () => {
@@ -163,4 +165,14 @@ test("append-only history and audit actor integrity are enforced", () => {
   assert.match(migration, /actor_type <> 'user' or actor_id = auth\.uid\(\)/);
   assert.match(migration, /create policy reflection_versions_workspace_insert/);
   assert.match(migration, /created_by = auth\.uid\(\)/);
+});
+
+test("workspace shell is dynamic, the /workspace alias redirects, and CI is configured", () => {
+  const layout = readFileSync(new URL("src/app/(workspace)/layout.tsx", root), "utf8");
+  assert.match(layout, /export const dynamic = "force-dynamic"/);
+  assert.ok(!existsSync(new URL("src/app/workspace/dashboard/page.tsx", root)), "duplicate /workspace/dashboard route should be gone");
+  const nextConfig = readFileSync(new URL("next.config.ts", root), "utf8");
+  assert.match(nextConfig, /source: "\/workspace\/dashboard"/);
+  assert.match(nextConfig, /destination: "\/dashboard"/);
+  assert.ok(existsSync(new URL(".github/workflows/ci.yml", root)), "CI workflow missing");
 });

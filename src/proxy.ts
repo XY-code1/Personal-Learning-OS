@@ -50,7 +50,7 @@ export async function proxy(request: NextRequest) {
 
   if (isAuthPage && user) {
     const url = request.nextUrl.clone();
-    url.pathname = "/workspace/dashboard";
+    url.pathname = "/dashboard";
     url.search = "";
     return NextResponse.redirect(url);
   }

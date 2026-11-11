@@ -9,7 +9,6 @@ import type { ActionResult } from "@/types/records";
 
 function refreshKnowledge(id?: string) {
   revalidatePath("/dashboard");
-  revalidatePath("/workspace/dashboard");
   revalidatePath("/knowledge");
   if (id) revalidatePath("/knowledge/" + id);
 }

@@ -67,7 +67,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
       return;
     }
     const supabase = createSupabaseBrowserClient();
-    const { error } = await supabase.auth.signInWithOtp({ email: normalizedEmail, options: { shouldCreateUser: mode === "register", emailRedirectTo: window.location.origin + "/workspace/dashboard" } });
+    const { error } = await supabase.auth.signInWithOtp({ email: normalizedEmail, options: { shouldCreateUser: mode === "register", emailRedirectTo: window.location.origin + "/dashboard" } });
     if (error) throw error;
     setEmail(normalizedEmail);
     setOtpSent(true);
@@ -121,14 +121,14 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
           if (passwordError) throw passwordError;
         }
         await ensurePersonalWorkspace(supabase);
-        router.push("/workspace/dashboard");
+        router.push("/dashboard");
         router.refresh();
         return;
       } else if (mode === "login") {
         const { error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password });
         if (error) throw error;
         await ensurePersonalWorkspace(supabase);
-        router.push("/workspace/dashboard");
+        router.push("/dashboard");
         router.refresh();
         return;
       } else {
@@ -137,7 +137,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
         if (data.session) await ensurePersonalWorkspace(supabase);
         setNotice({ tone: "success", title: data.session ? "学习空间已创建" : "账号已创建", text: data.session ? "正在准备你的学习空间。" : "请查看邮箱完成验证。" });
         if (data.session) {
-          router.push("/workspace/dashboard");
+          router.push("/dashboard");
           router.refresh();
           return;
         }
@@ -165,7 +165,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
       <Button type="submit" size="lg" className="auth-submit" disabled={pending}>{pending ? codeStep ? "验证中…" : "处理中…" : codeStep ? "验证并进入工作台" : method === "otp" && mode !== "forgot" ? "发送验证码" : copy.button}</Button>
     </form>
     {codeStep ? <button type="button" className="auth-resend" disabled={pending || resendSeconds > 0} onClick={resendOtp}>{resendSeconds > 0 ? `重新发送验证码（${resendSeconds}s）` : "重新发送验证码"}</button> : null}
-    {showDevelopmentBypass ? <div className="mt-5 border-t border-[var(--line-soft)] pt-5"><Button type="button" variant="outline" className="w-full" onClick={() => router.push("/workspace/dashboard")}>跳过登录进入工作台</Button><p className="mt-2 text-center text-xs text-muted-foreground">仅本地 development 环境可用，不会创建或伪造用户 Session。</p></div> : null}
+    {showDevelopmentBypass ? <div className="mt-5 border-t border-[var(--line-soft)] pt-5"><Button type="button" variant="outline" className="w-full" onClick={() => router.push("/dashboard")}>跳过登录进入工作台</Button><p className="mt-2 text-center text-xs text-muted-foreground">仅本地 development 环境可用，不会创建或伪造用户 Session。</p></div> : null}
     <p className="auth-alternate"><span>{copy.alternate}</span><Link href={copy.alternateHref}>{copy.alternateLabel}</Link></p>
   </div>;
 }
