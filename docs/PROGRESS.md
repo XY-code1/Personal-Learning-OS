@@ -1,18 +1,22 @@
 # Personal Learning OS 进度记录
 
-更新时间：2026-11-11
+更新时间：2026-11-12
 
-## 当前状态（2026-11-11）
+## 当前状态（2026-11-12）
 
 V1 收口阶段。Phase A / 1 / 2、P1.5、P2.1、Import/Export MVP、只读 AI Assistant MVP 代码实现完成。近期完成：
 
 - PR #1：数据完整性——版本 / 时间线 / 审计表 append-only 收敛，补 audit_logs actor 校验（https://github.com/XY-code1/Personal-Learning-OS/pull/1）。
 - PR #2：Timeline 真实读取页、Global Search 禁用、Dashboard / AI 占位链接收敛（https://github.com/XY-code1/Personal-Learning-OS/pull/2）。
-- 本 PR：README 重写、LICENSE、文档状态统一。
+- PR #3：README 重写、LICENSE、文档状态统一（https://github.com/XY-code1/Personal-Learning-OS/pull/3）。
+- PR #4：工程化——CI、workspace layout force-dynamic、重复路由收敛、真实工作区名与记录数（https://github.com/XY-code1/Personal-Learning-OS/pull/4）。
+- PR #5：核心表 insert 强制 `created_by = auth.uid()`（https://github.com/XY-code1/Personal-Learning-OS/pull/5）。
+- PR #6：多成员 Workspace 运行时支持、密码找回 / 注册确认回调路由（https://github.com/XY-code1/Personal-Learning-OS/pull/6）。
+- PR #7：Knowledge Detail 关联链接不再指向占位模块（https://github.com/XY-code1/Personal-Learning-OS/pull/7）。
 
-自动化验证：npm run lint / typecheck / test / build 全部通过（PR #1 / #2 合并后测试 15/15）。
+自动化验证：npm run lint / typecheck / test / build 全部通过（PR #7 合并后测试 19/19）。
 
-剩余 V1 工作见 docs/ROADMAP.md 的 P0–P10；最优先仍是 Projects / Experiments / Topics / Reflections / Settings 占位模块升级、Global Search 实现、JSON 导入冲突预览和多成员 Workspace。
+剩余 V1 工作见 docs/ROADMAP.md 的「V1 收口待办」；最优先仍是 Projects / Experiments / Topics / Reflections / Settings 占位模块升级、Global Search 实现、JSON 导入冲突预览与原子导入。
 
 ## 历史阶段记录（2026-09-16）
 
@@ -72,8 +76,8 @@ V1 功能范围已冻结，当前在不破坏既有模块的前提下增量实�
 | Tasks | Partial | Implemented | Implemented：真实 Tasks | Implemented：创建、编辑、状态更新、软归档 | Implemented | Implemented：loading/error、empty、pending/feedback | 基础响应式 | Partial：可通过 Knowledge Detail 关联为 Next Action，Project 关系页面未接入 | 基础 Task 闭环可用，但项目上下文和问题流未完成 |
 | Experiments | Placeholder | Placeholder：共享 ModuleEmptyPage | Not Implemented：schema 有，页面无 query | Not Implemented | Schema 有 RLS；页面未接入 | Placeholder only | 外壳可响应式 | Not Implemented：experiment_notes、experiment_knowledge 未接入 | Knowledge Detail 能展示入口，但无法创建或管理实验 |
 | Reflections | Partial | Partial：独立页面是 Placeholder，Knowledge Detail 可创建 Reflection v1 | Partial：Reflection v1、reflection_versions、reflection_knowledge 可真实写入 | Partial：Detail 可创建；独立列表、编辑和后续版本缺失 | Implemented for Detail action | Partial：Detail 有空状态/action feedback；独立页无数据状态 | 基础响应式 | Partial：Knowledge Detail 可关联；Notes/Projects/Tasks 关系管理缺失 | 核心认知记录存在，但一级 Reflections 入口尚未形成闭环 |
-| Timeline | Broken | Placeholder：页面共享 ModuleEmptyPage | Broken：写入 timeline_events 的 action 存在，但主路由不查询 | Not Implemented：只有写入投影，没有列表读取 | Schema 有 RLS；主页面没有 query | Placeholder only | 外壳可响应式 | Broken：用户无法从 Timeline 入口查看任何跨模块事件 | 这是明确 Broken flow：事件已生成但产品入口不可读 |
-| Global Search | Placeholder | Placeholder：有输入外观和 EmptyState | Not Implemented：没有 query、API 或搜索索引 | Not Implemented | Not Implemented at runtime | Placeholder only：输入无 submit/change 行为 | 基础响应式 | Not Implemented | 这是死交互，不应在 V1 宣称可搜索 |
+| Timeline | Implemented | Implemented：真实列表、筛选、空状态 | Implemented：listTimelineEvents 读取 timeline_events | Not Implemented：只读投影，无写 CRUD（符合定位） | Implemented：context + workspace_id + RLS | Implemented：loading/error route、empty、筛选反馈 | 基础响应式 | Implemented：事件可回链 Knowledge / Notes / Tasks | 事件已生成且产品入口可读，Broken flow 已修复 |
+| Global Search | Placeholder | Placeholder：输入已禁用并说明即将开放 | Not Implemented：没有 query、API 或搜索索引 | Not Implemented | Not Implemented at runtime | Placeholder only：输入禁用，无 submit/change 行为 | 基础响应式 | Not Implemented | 不再伪装成可交互入口；V1 不宣称可搜索 |
 | AI Assistant | Partial | Implemented：/ai 有只读问答表单、状态和 Sources 展示；Knowledge Detail 保留 Review UI | Partial：服务端按 Workspace 读取 Notes、Knowledge、Projects、Reflections、Timeline，并调用可替换 Provider | Partial：Review 是 proposal-first；Assistant 不写库、不保存会话 | Implemented for API：context + workspace_id + RLS | Implemented：加载、未配置、未登录、无匹配、Provider 错误和回答状态 | 基础响应式 | Partial：回答来源可回链；尚无 Personal RAG、Citation 片段和 Tool Calling | 只读问答 MVP 已接入，完整 Assistant 能力仍未完成 |
 | Import / Export | Partial | Implemented：文件选择、导入反馈、Markdown / JSON 下载 | Partial：Markdown/TXT 创建真实 Note；JSON 读取/写入当前 Workspace | Partial：JSON additive insert，不覆盖；无冲突预览和跨表事务 | Implemented for API：context + workspace_id + RLS；不使用 service role | Partial：客户端错误/成功状态有；API 有格式、认证和服务错误 | 基础响应式 | Partial：JSON 保留版本与关系；Markdown 只生成可读副本 | 迁移 MVP 已接入，完整冲突预览、原子导入和 Obsidian 目录仍未完成 |
 | Settings | Placeholder | Placeholder：共享 ModuleEmptyPage | Not Implemented：没有 profile/preferences 读写 | Not Implemented | Schema 有 profiles/workspaces；页面未接入 | Placeholder only | 外壳可响应式 | Not Implemented | 账户、Workspace、偏好和 AI 配置尚未形成设置流程 |

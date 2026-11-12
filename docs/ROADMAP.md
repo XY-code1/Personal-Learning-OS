@@ -1,6 +1,6 @@
 # Personal Learning OS 开发路线
 
-> 当前阶段：V1 收口（P0：修复 Broken / Placeholder 核心模块）。Phase A / Phase 1 / Phase 2 / P1.5 / P2.1 已完成；Import / Export 与只读 AI Assistant MVP 已实现。剩余工作见下方 P0–P10。
+> 当前阶段：V1 收口（P0：修复 Broken / Placeholder 核心模块）。Phase A / Phase 1 / Phase 2 / P1.5 / P2.1 已完成；Import / Export 与只读 AI Assistant MVP 已实现，PR #1–#7 已合并。剩余工作见 [TODO.md](TODO.md) 的「V1 收口待办」。
 
 ## Phase 0：基础工程（已完成）
 

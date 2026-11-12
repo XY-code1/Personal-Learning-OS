@@ -45,7 +45,7 @@ Email provider、6 位 OTP 模板和 Redirect URL 仍需在 Dashboard 手动配�
 
 ## 3. 创建项目根目录的 `.env.local`
 
-在 `E:\Personal Learning\` 下新建一个纯文本文件 `.env.local`（Next.js 自动加载它，且 `.gitignore` 已忽略所有 `.env*`）：
+在项目根目录新建一个纯文本文件 `.env.local`（Next.js 自动加载它，且 `.gitignore` 已忽略所有 `.env*`）：
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://你的项目ID.supabase.co
@@ -124,7 +124,7 @@ supabase db push
 
 1. 启动开发服务器：
    ```bash
-   cd "E:\Personal Learning"
+   cd /path/to/Personal-Learning-OS
    npm run dev
    ```
 2. 打开 http://localhost:3000/register。

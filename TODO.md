@@ -1,14 +1,18 @@
 # Personal Learning OS TODO
 
-更新时间：2026-11-11
+更新时间：2026-11-12
 
-当前阶段：**V1 收口（P0：修复 Broken / Placeholder 核心模块）**。Phase A、Phase 1、Phase 2、P1.5、P2.1、Import / Export MVP、只读 AI Assistant MVP 已完成代码实现；V1 剩余工作见 [docs/ROADMAP.md](docs/ROADMAP.md) 的 P0–P10。
+当前阶段：**V1 收口（P0：修复 Broken / Placeholder 核心模块）**。Phase A、Phase 1、Phase 2、P1.5、P2.1、Import / Export MVP、只读 AI Assistant MVP 已完成代码实现；V1 剩余工作见 [docs/ROADMAP.md](docs/ROADMAP.md) 的「V1 收口待办」。
 
 ## 近期已完成
 
 - [x] 数据完整性：版本 / 时间线 / 审计表 append-only 收敛（PR #1）。
 - [x] Timeline 真实读取页、Global Search 禁用、Dashboard / AI 占位链接收敛（PR #2）。
-- [x] README 重写、LICENSE、文档状态统一（本 PR）。
+- [x] README 重写、LICENSE、文档状态统一（PR #3）。
+- [x] 工程化：CI、workspace layout `force-dynamic`、重复路由收敛、真实工作区名与记录数（PR #4）。
+- [x] 核心表 insert 强制 `created_by = auth.uid()`（PR #5）。
+- [x] 多成员 Workspace 运行时支持、密码找回 / 注册确认回调路由（PR #6）。
+- [x] Knowledge Detail 关联链接不再指向占位模块（PR #7）。
 
 ## V1 收口待办
 
@@ -16,8 +20,6 @@
 - [ ] Global Search 实现跨模块关键词搜索。
 - [ ] JSON 导入冲突预览与跨表原子导入。
 - [ ] AI Assistant 流式对话、精确 Citation、Tool Calling。
-- [ ] 多成员 Workspace 运行时支持。
-- [ ] 密码找回 / 注册确认回调路由。
 - [ ] 真实登录态人工验收（RLS 隔离、非空 Explore、AI Review）。
 
 ## 历史完成项
