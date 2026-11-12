@@ -192,3 +192,24 @@ test("core insert policies require created_by = auth.uid()", () => {
   }
   assert.match(migration, /created_by = auth\.uid\(\)/);
 });
+
+test("workspace context supports shared memberships and auth recovery has a callback", () => {
+  const context = readFileSync(new URL("src/server/workspace/context.ts", root), "utf8");
+  assert.match(context, /from\("workspace_members"\)/);
+  assert.match(context, /ensureUserWorkspace/);
+  const bootstrap = readFileSync(new URL("src/lib/supabase/bootstrap.ts", root), "utf8");
+  assert.match(bootstrap, /export async function ensureUserWorkspace/);
+  assert.doesNotMatch(bootstrap, /ensurePersonalWorkspace/);
+
+  assert.ok(existsSync(new URL("src/app/auth/callback/page.tsx", root)), "auth callback route missing");
+  const callback = readFileSync(new URL("src/app/auth/callback/page.tsx", root), "utf8");
+  assert.match(callback, /exchangeCodeForSession/);
+  assert.match(callback, /onAuthStateChange/);
+
+  assert.ok(existsSync(new URL("src/app/reset-password/page.tsx", root)), "reset password route missing");
+  const reset = readFileSync(new URL("src/app/reset-password/page.tsx", root), "utf8");
+  assert.match(reset, /updateUser/);
+  const authForm = readFileSync(new URL("src/features/auth/auth-form.tsx", root), "utf8");
+  assert.match(authForm, /redirectTo: window\.location\.origin \+ "\/auth\/callback"/);
+  assert.match(authForm, /emailRedirectTo: window\.location\.origin \+ "\/auth\/callback"/);
+});

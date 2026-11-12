@@ -76,7 +76,7 @@ AI_API_KEY=
      - `http://localhost:3000/auth/callback`
      - `http://localhost:3000/dashboard`
      - `http://localhost:3000/login`
-   - 项目目前的 OTP 注册回调是 `window.location.origin + "/dashboard"`，所以登录流程会自动跳到本地的工作台。
+   - 项目目前的 OTP 注册、注册确认和密码找回回调都是 `window.location.origin + "/auth/callback"`：callback 页面负责建立会话，然后跳转到工作台；如果链接类型是密码找回（`type=recovery`），则跳转到 `/reset-password` 让用户设置新密码。
 
 ## 5. 把邮件模板改成显示 6 位数字验证码
 
