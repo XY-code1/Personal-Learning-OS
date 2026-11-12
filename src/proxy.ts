@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { hasSupabasePublicEnv, isDevelopmentAuthBypassEnabled } from "@/lib/supabase/config";
 
-const protectedPrefixes = ["/dashboard", "/inbox", "/notes", "/knowledge", "/topics", "/projects", "/tasks", "/experiments", "/reflections", "/timeline", "/search", "/ai", "/import-export", "/settings", "/workspace"];
+const protectedPrefixes = ["/dashboard", "/inbox", "/notes", "/knowledge", "/topics", "/projects", "/tasks", "/experiments", "/reflections", "/timeline", "/search", "/ai", "/import-export", "/settings", "/workspace", "/reset-password"];
 const authPaths = ["/login", "/register", "/forgot-password"];
 
 export async function proxy(request: NextRequest) {
@@ -59,5 +59,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/inbox/:path*", "/notes/:path*", "/knowledge/:path*", "/topics/:path*", "/projects/:path*", "/tasks/:path*", "/experiments/:path*", "/reflections/:path*", "/timeline/:path*", "/search/:path*", "/ai/:path*", "/import-export/:path*", "/settings/:path*", "/workspace/:path*", "/login", "/register", "/forgot-password"],
+  matcher: ["/dashboard/:path*", "/inbox/:path*", "/notes/:path*", "/knowledge/:path*", "/topics/:path*", "/projects/:path*", "/tasks/:path*", "/experiments/:path*", "/reflections/:path*", "/timeline/:path*", "/search/:path*", "/ai/:path*", "/import-export/:path*", "/settings/:path*", "/workspace/:path*", "/reset-password", "/login", "/register", "/forgot-password"],
 };

@@ -7,7 +7,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
-import { ensurePersonalWorkspace } from "@/lib/supabase/bootstrap";
+import { ensureUserWorkspace } from "@/lib/supabase/bootstrap";
 import { isDevelopmentAuthBypassEnabled } from "@/lib/supabase/config";
 
 type AuthMode = "login" | "register" | "forgot";
@@ -67,7 +67,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
       return;
     }
     const supabase = createSupabaseBrowserClient();
-    const { error } = await supabase.auth.signInWithOtp({ email: normalizedEmail, options: { shouldCreateUser: mode === "register", emailRedirectTo: window.location.origin + "/dashboard" } });
+    const { error } = await supabase.auth.signInWithOtp({ email: normalizedEmail, options: { shouldCreateUser: mode === "register", emailRedirectTo: window.location.origin + "/auth/callback" } });
     if (error) throw error;
     setEmail(normalizedEmail);
     setOtpSent(true);
@@ -104,7 +104,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
       setEmail(normalizedEmail);
       const supabase = createSupabaseBrowserClient();
       if (mode === "forgot") {
-        const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail, { redirectTo: window.location.origin + "/login" });
+        const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail, { redirectTo: window.location.origin + "/auth/callback" });
         if (error) throw error;
         setNotice({ tone: "success", title: "恢复邮件已发送", text: "请查看收件箱并按邮件提示继续。" });
       } else if (method === "otp" && !otpSent) {
@@ -120,21 +120,21 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
           const { error: passwordError } = await supabase.auth.updateUser({ password });
           if (passwordError) throw passwordError;
         }
-        await ensurePersonalWorkspace(supabase);
+        await ensureUserWorkspace(supabase);
         router.push("/dashboard");
         router.refresh();
         return;
       } else if (mode === "login") {
         const { error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password });
         if (error) throw error;
-        await ensurePersonalWorkspace(supabase);
+        await ensureUserWorkspace(supabase);
         router.push("/dashboard");
         router.refresh();
         return;
       } else {
-        const { data, error } = await supabase.auth.signUp({ email: normalizedEmail, password });
+        const { data, error } = await supabase.auth.signUp({ email: normalizedEmail, password, options: { emailRedirectTo: window.location.origin + "/auth/callback" } });
         if (error) throw error;
-        if (data.session) await ensurePersonalWorkspace(supabase);
+        if (data.session) await ensureUserWorkspace(supabase);
         setNotice({ tone: "success", title: data.session ? "学习空间已创建" : "账号已创建", text: data.session ? "正在准备你的学习空间。" : "请查看邮箱完成验证。" });
         if (data.session) {
           router.push("/dashboard");

@@ -1,7 +1,7 @@
 import type { SupabaseClient, User } from "@supabase/supabase-js";
 
 import { hasSupabasePublicEnv, isDevelopmentAuthBypassEnabled } from "@/lib/supabase/config";
-import { ensurePersonalWorkspace } from "@/lib/supabase/bootstrap";
+import { ensureUserWorkspace } from "@/lib/supabase/bootstrap";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type WorkspaceRecord = { id: string; name: string; slug: string };
@@ -25,26 +25,49 @@ export async function getWorkspaceContext({ ensure = false }: { ensure?: boolean
   }
   if (!user) return { status: "unauthenticated" };
 
-  let workspaceId: string | null = null;
-  if (ensure) workspaceId = await ensurePersonalWorkspace(supabase);
-
-  const { data: workspace, error: workspaceError } = await supabase
+  // Personal workspace first (backward compatible).
+  const { data: ownedWorkspace, error: ownedWorkspaceError } = await supabase
     .from("workspaces")
     .select("id, name, slug")
     .eq("owner_id", user.id)
     .order("created_at", { ascending: true })
     .limit(1)
     .maybeSingle();
-  if (workspaceError) throw workspaceError;
+  if (ownedWorkspaceError) throw ownedWorkspaceError;
 
-  if (!workspace && workspaceId) {
+  let workspace = ownedWorkspace ?? null;
+
+  // Fall back to the earliest shared workspace membership.
+  if (!workspace) {
+    const { data: memberships, error: membershipError } = await supabase
+      .from("workspace_members")
+      .select("workspace_id")
+      .eq("user_id", user.id)
+      .order("joined_at", { ascending: true })
+      .limit(1);
+    if (membershipError) throw membershipError;
+
+    if (memberships && memberships.length > 0) {
+      const { data: memberWorkspace, error: memberWorkspaceError } = await supabase
+        .from("workspaces")
+        .select("id, name, slug")
+        .eq("id", memberships[0].workspace_id)
+        .maybeSingle();
+      if (memberWorkspaceError) throw memberWorkspaceError;
+      workspace = memberWorkspace ?? null;
+    }
+  }
+
+  // Bootstrap a personal workspace when a write is requested and none exists.
+  if (!workspace && ensure) {
+    const workspaceId = await ensureUserWorkspace(supabase);
     const { data: ensuredWorkspace, error: ensuredWorkspaceError } = await supabase
       .from("workspaces")
       .select("id, name, slug")
       .eq("id", workspaceId)
-      .single();
+      .maybeSingle();
     if (ensuredWorkspaceError) throw ensuredWorkspaceError;
-    return { status: "ready", supabase, user, workspace: ensuredWorkspace };
+    workspace = ensuredWorkspace ?? null;
   }
 
   if (!workspace) return { status: "unauthenticated" };
