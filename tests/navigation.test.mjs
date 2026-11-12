@@ -213,3 +213,10 @@ test("workspace context supports shared memberships and auth recovery has a call
   assert.match(authForm, /redirectTo: window\.location\.origin \+ "\/auth\/callback"/);
   assert.match(authForm, /emailRedirectTo: window\.location\.origin \+ "\/auth\/callback"/);
 });
+
+test("Knowledge Detail does not deep-link into placeholder modules", () => {
+  const detail = readFileSync(new URL("src/features/knowledge/knowledge-detail.tsx", root), "utf8");
+  assert.doesNotMatch(detail, /href="\/projects"/);
+  assert.doesNotMatch(detail, /href="\/experiments"/);
+  assert.doesNotMatch(detail, /href="\/reflections"/);
+});
