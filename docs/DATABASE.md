@@ -122,3 +122,14 @@ migration `supabase/migrations/20261111000000_enforce_append_only_history.sql` �
 - `reflection_versions` 的 insert 策略同时要求 `created_by = auth.uid()`，与 `note_versions`、`knowledge_versions` 保持一致。
 
 数据库级联删除（例如删除 Workspace 时）不受影响；应用层没有删除历史版本、时间线或审计记录的入口。
+
+## Core insert creator integrity
+
+核心记录和关系表的 insert 策略要求 `created_by = auth.uid()`，应用用户不能冒充其他创建者。
+
+migration `supabase/migrations/20261112000000_core_insert_creator_integrity.sql` 覆盖以下 22 张表：
+
+- 实体：`projects`、`experiments`、`reflections`、`topics`、`tags`
+- 关系：`note_topics`、`knowledge_topics`、`note_tags`、`knowledge_tags`、`note_knowledge`、`note_projects`、`note_tasks`、`knowledge_projects`、`knowledge_tasks`、`knowledge_relations`、`experiment_notes`、`experiment_knowledge`、`reflection_topics`、`reflection_notes`、`reflection_knowledge`、`reflection_projects`、`reflection_tasks`
+
+导入流程（`src/server/portability/import.ts`）和事务型 RPC 写入时已经使用当前用户作为 `created_by`，因此不受影响。

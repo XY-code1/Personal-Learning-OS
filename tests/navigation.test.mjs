@@ -176,3 +176,19 @@ test("workspace shell is dynamic, the /workspace alias redirects, and CI is conf
   assert.match(nextConfig, /destination: "\/dashboard"/);
   assert.ok(existsSync(new URL(".github/workflows/ci.yml", root)), "CI workflow missing");
 });
+
+test("core insert policies require created_by = auth.uid()", () => {
+  const migration = readFileSync(new URL("supabase/migrations/20261112000000_core_insert_creator_integrity.sql", root), "utf8");
+  for (const table of [
+    "projects", "experiments", "reflections", "topics", "tags",
+    "note_topics", "knowledge_topics", "note_tags", "knowledge_tags",
+    "note_knowledge", "note_projects", "note_tasks",
+    "knowledge_projects", "knowledge_tasks", "knowledge_relations",
+    "experiment_notes", "experiment_knowledge",
+    "reflection_topics", "reflection_notes", "reflection_knowledge",
+    "reflection_projects", "reflection_tasks",
+  ]) {
+    assert.ok(migration.includes(`'${table}'`), `missing table in migration: ${table}`);
+  }
+  assert.match(migration, /created_by = auth\.uid\(\)/);
+});
